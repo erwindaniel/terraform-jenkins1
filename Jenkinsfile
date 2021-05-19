@@ -13,44 +13,38 @@ pipeline {
         AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
     }
 
-   agent  any
-        options {
-                timestamps ()
-                
-            }
-
-    stages {
-       
-        stage('Plan') {
-            steps {
-                sh 'terraform init -input=false'
-                sh 'terraform workspace new ${environment}'
-                sh 'terraform workspace select ${environment}'
-                sh "terraform plan -input=false -out tfplan "
-                sh 'terraform show -no-color tfplan > tfplan.txt'
-            }
-        }
-        stage('Approval') {
-           when {
-               not {
-                   equals expected: true, actual: params.autoApprove
-               }
-           }
-
-           steps {
-               script {
-                    def plan = readFile 'terraform/tfplan.txt'
-                    input message: "Do you want to apply the plan?",
-                    parameters: [text(name: 'Plan', description: 'Please review the plan', defaultValue: plan)]
-               }
-           }
-       }
-
-        stage('Apply') {
-            steps {
-                sh "pwd;cd terraform ; terraform apply -input=false tfplan"
-            }
-        }
+   agent {
+      node {
+        label "jenkins"
+      } 
     }
 
+    stages {
+      stage('fetch_latest_code') {
+        steps {
+          git branch: 'jenkins', url: 'https://github.com/erwindaniel/terraform-jenkins1.git'
+        }
+      }
+
+      stage('TF Init&Plan') {
+        steps {
+          sh 'terraform init'
+          sh 'terraform plan'
+        }      
+      }
+
+      stage('Approval') {
+        steps {
+          script {
+            def userInput = input(id: 'confirm', message: 'Apply Terraform?', parameters: [ [$class: 'BooleanParameterDefinition', defaultValue: false, description: 'Apply terraform', name: 'confirm'] ])
+          }
+        }
+      }
+
+      stage('TF Apply') {
+        steps {
+          sh 'terraform apply -input=false'
+        }
+      }
+    } 
   }
