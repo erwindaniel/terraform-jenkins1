@@ -26,6 +26,7 @@ pipeline {
                         dir("terraform")
                         {
                             git "https://github.com/erwindaniel/terraform-jenkins1.git"
+                    
                         }
                     }
                 }
@@ -33,11 +34,11 @@ pipeline {
 
         stage('Plan') {
             steps {
-                sh 'pwd;cd terraform ; terraform init -input=false'
-                sh 'pwd;cd terraform ; terraform workspace new ${environment}'
-                sh 'pwd;cd terraform ; terraform workspace select ${environment}'
-                sh "pwd;cd terraform ; terraform plan -input=false -out tfplan "
-                sh 'pwd;cd terraform ; terraform show -no-color tfplan > tfplan.txt'
+                sh 'pwd; terraform init -input=false'
+                sh 'pwd; terraform workspace new ${environment}'
+                sh 'pwd; terraform workspace select ${environment}'
+                sh "pwd; terraform plan -input=false -out tfplan "
+                sh 'pwd; terraform show -no-color tfplan > tfplan.txt'
             }
         }
         stage('Approval') {
