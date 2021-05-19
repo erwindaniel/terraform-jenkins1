@@ -1,13 +1,23 @@
-variable "region" {
+variable "profile" {
+  type    = string
+  default = "default"
+}
+variable "region-master" {
+  type    = string
   default = "us-east-1"
 }
 
-variable "ami_id" {
-  type = "map"
+variable "external_ip" {
+  type    = string
+  default = "0.0.0.0/0"
+}
 
-  default = {
-    us-east-1    = "ami-035b3c7efe6d061d5"
-    eu-west-2    = "ami-132b3c7efe6sdfdsfd"
-    eu-central-1 = "ami-9787h5h6nsn"
-  }
+variable "workers-count" {
+  type    = number
+  default = 1
+}
+
+variable "instance-type" {
+  type    = string
+  default = "t3.micro"
 }
