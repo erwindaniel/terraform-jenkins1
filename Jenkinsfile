@@ -16,7 +16,7 @@ pipeline {
    agent  any
         options {
                 timestamps ()
-                ansiColor('xterm')
+                ansiColor('catchError')
             }
     stages {
         stage('checkout') {
