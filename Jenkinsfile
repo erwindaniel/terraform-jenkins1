@@ -40,7 +40,7 @@ pipeline {
       stage('TF Apply') {
         steps {
           echo "${env.OPTION_TERRAFORM}"
-          sh 'terraform ${env.OPTION_TERRAFORM} -auto-approve'
+          sh 'terraform "${env.OPTION_TERRAFORM}" -auto-approve'
         }
       }
 
