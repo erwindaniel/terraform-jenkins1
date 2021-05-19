@@ -28,13 +28,13 @@ pipeline {
       }
 
       stage('Approval') {
-        steps {
-           script {
-                    env.RELEASE_SCOPE = input message: 'User input required', ok: 'apply',
-                            parameters: [choice(name: 'RELEASE_SCOPE', choices: 'apply\destroy', description: 'apply or destroy terraform?')]
+           steps {
+                script {
+                    env.RELEASE_SCOPE = input message: 'User input required', ok: 'Release!',
+                            parameters: [choice(name: 'RELEASE_SCOPE', choices: 'patch\nminor\nmajor', description: 'What is the release scope?')]
                 }
-            echo "${env.RELEASE_SCOPE}"    
-        }
+                echo "${env.RELEASE_SCOPE}"
+                }
       }
 
       stage('TF Apply') {
