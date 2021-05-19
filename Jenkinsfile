@@ -37,7 +37,7 @@ pipeline {
                 }
       }
 
-      stage('TF Apply') {
+      stage('TF Apply-Destroy') {
         steps {
           echo "${env.OPTION_TERRAFORM}"
           sh "terraform ${env.OPTION_TERRAFORM} -auto-approve"
