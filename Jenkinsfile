@@ -31,9 +31,9 @@ pipeline {
         steps {
            script {
                     env.RELEASE_SCOPE = input message: 'User input required', ok: 'apply',
-                            parameters: [choice(name: 'RELEASE_SCOPE', choices: 'apply\destoy', description: 'apply or destroy terraform?')]
+                            parameters: [choice(name: 'RELEASE_SCOPE', choices: 'apply\destroy', description: 'apply or destroy terraform?')]
                 }
-                
+            echo "${env.RELEASE_SCOPE}"    
         }
       }
 
