@@ -24,4 +24,9 @@ Docker version 19.03.13, build 4484c46d9d
 
 ## Configuraciones Previas
 
+1. Instalar los plugins recomendados al instalar jenkins
+2. Instalr plugin Terraform
+3. Configurar instalacion de terraform por Administrar jenkins-->Global Tools Configuration dar nombre terraform
+4. Generar una clave keygen para las llaves de las instancias con el comando ssh-keygen -t rsa (este paso es opcional) reemplazar el contenido del archivo .ssh/id_rsa.pub en la linea 11 del archivo instances.tf
+5. Crear un usuario en la cuenta de AWS con permisos de creacion de instancias EC2, VPC, IGW, Subnet, security groups
 
