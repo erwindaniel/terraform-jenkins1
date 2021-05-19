@@ -30,16 +30,16 @@ pipeline {
       stage('Approval') {
            steps {
                 script {
-                    env.RELEASE_SCOPE = input message: 'User input required', ok: 'Release!',
-                            parameters: [choice(name: 'RELEASE_SCOPE', choices: 'patch\nminor\nmajor', description: 'What is the release scope?')]
+                    env.OPTION_TERRAFORM = input message: 'User input required', ok: 'Execute!',
+                            parameters: [choice(name: 'OPTION_TERRAFORM', choices: 'apply\ndestroy', description: 'Apply or destroy infraestrcture?')]
                 }
-                echo "${env.RELEASE_SCOPE}"
+                echo "${env.OPTION_TERRAFORM}"
                 }
       }
 
       stage('TF Apply') {
         steps {
-          echo "${env.RELEASE_SCOPE}"
+          echo "${env.OPTION_TERRAFORM}"
           sh 'terraform apply -auto-approve'
         }
       }
