@@ -7,11 +7,11 @@ pipeline {
         AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
     }
 
-   agent {
-      node {
-        label "jenkins"
-      } 
-    }
+   agent any 
+
+   tools {
+      terraform "terraform"
+   } 
 
     stages {
       stage('fetch_latest_code') {
