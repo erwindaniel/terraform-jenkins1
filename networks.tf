@@ -45,7 +45,7 @@ resource "aws_subnet" "subnet_2" {
 #Create subnet #3 in us-east-1
 resource "aws_subnet" "subnet_3" {
   provider          = aws.region-master
-   vpc_id           = aws_vpc.vpc_master.id
+  vpc_id            = aws_vpc.vpc_master.id
   availability_zone = element(data.aws_availability_zones.azs.names, 2)
-  cidr_block        = "192.168.1.0/24"
+  cidr_block        = "10.0.3.0/24"
 }
