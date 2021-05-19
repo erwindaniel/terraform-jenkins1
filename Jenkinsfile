@@ -30,13 +30,17 @@ pipeline {
       stage('Approval') {
         steps {
           script {
-            def userInput = input(id: 'confirm', message: 'Apply Terraform?', parameters: [ [$class: 'BooleanParameterDefinition', defaultValue: false, description: 'Apply terraform', name: 'confirm'] ])
+            def INPUT_PARAMS = input message: 'Please select option', ok: 'Next',
+                            parameters: [ 
+                            choice(name: 'TERRAFORM', choices: ['apply','destroy','exit'].join('\n'), description: 'Please select the option'),
+                            ])
           }
         }
       }
 
       stage('TF Apply') {
         steps {
+          sh 'echo $TERRAFORM'  
           sh 'terraform apply -auto-approve'
         }
       }
