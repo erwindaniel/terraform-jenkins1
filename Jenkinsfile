@@ -1,66 +1,49 @@
 
 pipeline {
 
-    parameters {
-        string(name: 'environment', defaultValue: 'terraform', description: 'Workspace/environment file to use for deployment')
-        booleanParam(name: 'autoApprove', defaultValue: false, description: 'Automatically run apply after generating plan?')
-
-    }
-
-
+   
      environment {
         AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
         AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
     }
 
-   agent  any
-        options {
-                timestamps ()
-                
-            }
+   agent any 
+
+   tools {
+      terraform "terraform"
+   } 
 
     stages {
-        stage('checkout') {
-            steps {
-                 script{
-                        dir("terraform")
-                        {
-                            git "https://github.com/erwindaniel/terraform-jenkins1.git"
-                        }
-                    }
-                }
-            }
-
-        stage('Plan') {
-            steps {
-                sh 'pwd;cd terraform ; terraform init -input=false'
-                sh 'pwd;cd terraform ; terraform workspace new ${environment}'
-                sh 'pwd;cd terraform ; terraform workspace select ${environment}'
-                sh "pwd;cd terraform ; terraform plan -input=false -out tfplan "
-                sh 'pwd;cd terraform ; terraform show -no-color tfplan > tfplan.txt'
-            }
+      stage('fetch_latest_code') {
+        steps {
+          git branch: 'main', url: 'https://github.com/erwindaniel/terraform-jenkins1.git'
         }
-        stage('Approval') {
-           when {
-               not {
-                   equals expected: true, actual: params.autoApprove
-               }
-           }
+      }
 
+      stage('TF Init&Plan') {
+        steps {
+          sh 'terraform init'
+          sh 'terraform plan'
+        }      
+      }
+
+      stage('Approval') {
            steps {
-               script {
-                    def plan = readFile 'terraform/tfplan.txt'
-                    input message: "Do you want to apply the plan?",
-                    parameters: [text(name: 'Plan', description: 'Please review the plan', defaultValue: plan)]
-               }
-           }
-       }
+                script {
+                    env.OPTION_TERRAFORM = input message: 'User input required', ok: 'Execute!',
+                            parameters: [choice(name: 'OPTION_TERRAFORM', choices: 'apply\ndestroy', description: 'Apply or destroy infraestrcture?')]
+                }
+                echo "${env.OPTION_TERRAFORM}"
+                }
+      }
 
-        stage('Apply') {
-            steps {
-                sh "pwd;cd terraform ; terraform apply -input=false tfplan"
-            }
+      stage('TF Apply-Destroy') {
+        steps {
+          echo "${env.OPTION_TERRAFORM}"
+          sh "terraform ${env.OPTION_TERRAFORM} -auto-approve"
         }
-    }
+      }
 
+    
+    } 
   }
