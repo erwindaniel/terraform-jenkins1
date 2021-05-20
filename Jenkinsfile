@@ -16,7 +16,7 @@ pipeline {
     stages {
       stage('fetch_latest_code') {
         steps {
-          git branch: 'jenkins', url: 'https://github.com/erwindaniel/terraform-jenkins1.git'
+          git branch: 'main', url: 'https://github.com/erwindaniel/terraform-jenkins1.git'
         }
       }
 
