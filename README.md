@@ -9,6 +9,8 @@ Crea o destruye con un pipeline en jenkins una infraestructura en AWS que consis
 4. 1 Gateway que comunica la VPC con el exterior
 5. 3 instancias EC2 cada una en una zona de disponibilidad
 
+El estado de terraform se guarda en un bucket s3 que se configura en el archivo backend.tf
+
 ## Entorno de ejecucion
 
 El desarrollo y pruebas se realizó con el siguiente entorno:
@@ -32,6 +34,8 @@ Docker version 19.03.13, build 4484c46d9d
 4. Generar una clave keygen para las llaves de las instancias con el comando ssh-keygen -t rsa (este paso es opcional) reemplazar el contenido del archivo .ssh/id_rsa.pub en la linea 11 del archivo instances.tf
 5. Crear un usuario en la cuenta de AWS con permisos de creacion de instancias EC2, VPC, IGW, Subnet, security groups, en el archivo policy.js se listan los permisos que se usaron para el usuario creado, descargar las credenciales del usuario creado
 6. Configurar las credenciales del usuario AWS en jenkins por la opcion Administrar Jenkins-->Manage Credentials-->Global-->ADD Credentials --> Kind: secret text crear dos variables: AWS_ACCESS_KEY_ID y AWS_SECRET_ACCESS_KEY, las credenciales van en el campo Secret
+7. Crear un bucket s3 en la cuenta de aws por linea de comandos, el comando para crear el bucket es: **aws s3api create-bucket --bucket <nombre_del_bucket>**
+8. Guardar el **nombre_del_bucket** en el archivo backend.tf linea 12 
 
 # Creacion del Job en jenkins
 
